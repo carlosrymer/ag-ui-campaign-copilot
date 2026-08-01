@@ -57,6 +57,60 @@ SCENARIOS = {
                                 "Hold this until the review closes."},
         },
     },
+
+    # --- deliberately awkward inputs -------------------------------------
+    # A vague brief with no segment name, a hedged budget, and a nonsense-ish
+    # industry hint. The agent has to search badly, recover, and cope with a
+    # budget small enough that the allocator prunes most channels.
+    "messy_brief": {
+        "label": "Vague brief, agent recovers",
+        "brief": (
+            "so we need to do something for our healthcare people this quarter. "
+            "the hospital IT folks I think? budget is whatever's left, maybe like $38k? "
+            "make it good and get it live."
+        ),
+        "resume": {
+            "status": "resolved",
+            "payload": {"decision": "edit", "approver": "Carlos Rymer"},
+        },
+    },
+
+    # A deliberately large, multi-requirement brief: more tool calls, more copy,
+    # and a much bigger state object, which is where the delta-vs-snapshot
+    # comparison actually earns its keep.
+    "long_run": {
+        "label": "Long enterprise run",
+        "brief": (
+            "Plan our biggest Q4 push: enterprise manufacturing supply-chain leaders, "
+            "$400,000 total. I want the full picture before we commit — compare the "
+            "historical performance of every channel we have data for, not just the top "
+            "few, and explain why the allocator excluded anything it excluded. Cap any "
+            "single channel at 30% of spend. Then draft three variants, check them for "
+            "compliance, and publish."
+        ),
+        "resume": {
+            "status": "resolved",
+            "payload": {"decision": "approve", "approver": "Carlos Rymer",
+                        "note": "Good. The 30% cap is what I wanted. Ship it."},
+        },
+    },
+
+    # A different segment and a rejection on business grounds rather than legal.
+    "smb_reject": {
+        "label": "SMB plan rejected on strategy",
+        "brief": (
+            "Put together a $45,000 always-on campaign for SMB e-commerce operations "
+            "managers. Use whatever channels have actually converted for them before, "
+            "draft three variants, and publish it."
+        ),
+        "resume": {
+            "status": "resolved",
+            "payload": {"decision": "reject", "approver": "Carlos Rymer",
+                        "note": "We are pausing all SMB acquisition spend until the "
+                                "self-serve onboarding rebuild lands. Nothing goes out "
+                                "for this segment this quarter."},
+        },
+    },
 }
 
 
@@ -225,22 +279,42 @@ def main() -> None:
     names = [args.only] if args.only else list(SCENARIOS)
     model = resolve_model(args.base, args.model)
     print(f"capturing against model: {model}")
-    index = []
+
     for n in names:
-        rec = capture(args.base, n, SCENARIOS[n], model)
-        index.append({
+        capture(args.base, n, SCENARIOS[n], model)
+
+    rebuild_index()
+
+
+def rebuild_index() -> None:
+    """Rebuild index.json from every recording on disk.
+
+    Reading from disk rather than from just-captured runs means re-recording one
+    scenario never drops the others from the index, and the index can never
+    disagree with the files it points at.
+    """
+    entries = []
+    for path in sorted(OUT_DIR.glob("*.json")):
+        if path.name == "index.json":
+            continue
+        rec = json.loads(path.read_text())
+        entries.append({
             "scenario": rec["scenario"], "label": rec["label"], "model": rec["model"],
             "captured_at": rec["captured_at"], "event_count": rec["event_count"],
             "duration_ms": rec["duration_ms"], "wire_meter": rec["wire_meter"],
             "event_counts_by_type": rec["event_counts_by_type"],
-            "file": f"{rec['scenario']}.json",
+            "file": path.name,
         })
 
-    if not args.only:
-        (OUT_DIR / "index.json").write_text(json.dumps(
-            {"generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-             "recordings": index}, indent=2) + "\n")
-        print(f"\nwrote {(OUT_DIR / 'index.json').relative_to(ROOT)}")
+    # Present in the order the scenarios are declared, with any extras last.
+    order = {name: i for i, name in enumerate(SCENARIOS)}
+    entries.sort(key=lambda e: (order.get(e["scenario"], len(order)), e["scenario"]))
+
+    (OUT_DIR / "index.json").write_text(json.dumps(
+        {"generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+         "recordings": entries}, indent=2) + "\n")
+    print(f"\nwrote {(OUT_DIR / 'index.json').relative_to(ROOT)} "
+          f"({len(entries)} recordings: {', '.join(e['scenario'] for e in entries)})")
 
 
 if __name__ == "__main__":

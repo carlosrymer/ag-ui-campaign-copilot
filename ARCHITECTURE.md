@@ -47,14 +47,14 @@ flowchart TB
     end
 
     DATA[("segments · channels<br/>207 campaign rows · brand")]
-    MODEL["Kimi K3 (Moonshot)<br/>or Gemini 3.x"]
+    MODEL["Kimi K3 (Moonshot)<br/>or Gemini 3.6 Flash"]
 
     TOOLS --> DATA
     LOOP <-->|"streaming + tool calls"| MODEL
     LIVE <-->|"AG-UI events over SSE"| EP
 
     CAP["capture_runs.py"]
-    REC[("recordings/*.json<br/>approve · edit · reject")]
+    REC[("recordings/*.json<br/>6 real runs: 2x approve<br/>2x edit · 2x reject")]
     CAP -->|"drives real runs"| EP
     CAP --> REC
     REC --> REP
@@ -73,12 +73,12 @@ flowchart TB
 | `backend/app/tools.py` | Five real functions over the dataset, their JSON Schemas, and the gated-tool registry | Python stdlib |
 | `backend/app/llm.py` | Streaming clients for Moonshot (OpenAI-compatible) and Gemini, normalised to one chunk protocol | `httpx` |
 | `backend/scripts/seed_dataset.py` | Deterministic generator for the marketing dataset | Python stdlib |
-| `backend/scripts/capture_runs.py` | Drives real runs over HTTP through all three human paths; writes recordings | `httpx` |
+| `backend/scripts/capture_runs.py` | Drives real runs over HTTP across six scenarios and all three human paths; writes recordings and rebuilds the index | `httpx` |
 | `frontend/src/agui/reducer.ts` | The single AG-UI→UI reduction. Pure and total, so any prefix of the stream is a valid frame | TypeScript, `fast-json-patch` |
 | `frontend/src/agui/sources.ts` | The two event sources: live SSE reader, and the timed `Replayer` with keyframe caching | TypeScript |
 | `frontend/src/components/*` | Transcript, tool cards, approval gate, state panel, wire meter, scrubber | React 19 |
 | `frontend/scripts/validate-recordings.mjs` | Cross-language conformance: validates recorded events against the official TS schemas | `@ag-ui/core` 0.0.57 |
-| `.github/workflows/deploy.yml` | Validates, builds, and publishes the replayer | GitHub Actions, Pages |
+| `deploy/github-pages-workflow.yml` | Validates, builds, and publishes the replayer (see `deploy/README.md`) | GitHub Actions, Pages |
 
 ## Data flow
 
@@ -130,20 +130,26 @@ On resume, the decision in `ResumeEntry.payload` selects the path:
 
 ### Replay
 
-`capture_runs.py` performs exactly the above over real HTTP, recording each event with its
+`capture_runs.py` performs exactly the above over real HTTP for each of six scenarios,
+recording each event with its
 arrival offset in milliseconds, plus a synthetic `RAW` event marking where the human
 decided. The frontend's `Replayer` walks that array on a `setTimeout` schedule derived from
 the recorded offsets (with extra dwell inserted at the gate so it is readable), feeding the
 same reducer. Seeking is a re-fold of the prefix, which is correct by construction because
 the reducer is pure; keyframes every 100 events and a last-position cache keep that cheap
-even for the ~1,700-event runs a token-streaming model produces.
+even for the ~1,300-event runs a token-streaming model produces.
 
 ## Deployment
 
-The published site is **static only**. GitHub Actions installs the frontend, runs the
-conformance check against the committed recordings, builds with Vite (base path
-`/ag-ui-campaign-copilot/`), and publishes `frontend/dist` to GitHub Pages via
-`configure-pages` → `upload-pages-artifact` → `deploy-pages`. Any push to `main` redeploys.
+The published site is **static only**: the conformance check runs against the committed
+recordings, Vite builds with base path `/ag-ui-campaign-copilot/`, and `frontend/dist` is
+published to the `gh-pages` branch, which GitHub Pages serves.
+
+An equivalent Actions workflow (`configure-pages` → `upload-pages-artifact` →
+`deploy-pages`, gated on the conformance check) ships at
+`deploy/github-pages-workflow.yml` rather than `.github/workflows/`, because the credential
+available while building this repo lacked the `workflow` OAuth scope and GitHub refuses
+pushes into `.github/workflows/` without it. `deploy/README.md` documents both routes.
 
 The recordings are copied into `frontend/public/recordings` at build time and fetched
 lazily by the app, so only the selected scenario is downloaded.
@@ -181,15 +187,22 @@ seeded dataset also needed rebuilding after the first version produced a 32,979�
 email — the funnel had been generated forward from CPM impressions instead of from
 cost-per-MQL, which made cheap-CPM channels absurd.
 
-**Why Kimi K3 for the committed recordings.** Both a Gemini client and a Moonshot client
-are implemented and both were verified working end to end. The Gemini key's prepayment
-credits were exhausted partway through the build, so the recordings shipped here are from
-`kimi-k3`. This turned out to be useful evidence for the protocol's provider-independence:
-swapping providers changed one environment variable and no protocol code, because both
-clients normalise to the same internal chunk shape before anything becomes an AG-UI event.
-Two model-specific quirks did need handling — Gemini 3.x returns a `thoughtSignature`
-alongside function calls that must be echoed back verbatim in history, and `kimi-k3`
-rejects any `temperature` other than 1.
+**Why two providers in the committed recordings.** Three runs are `kimi-k3` and three are
+`gemini-3.6-flash`. That split was partly forced — the Gemini key ran out of prepayment
+credits mid-build and was later topped up — but it turned into the most useful evidence in
+the project. Swapping providers changed one environment variable and no protocol code,
+because both clients normalise to the same internal chunk shape before anything becomes an
+AG-UI event.
+
+It also exposed something the protocol does *not* normalise: streaming granularity. Kimi K3
+emits 813–1,336 events per run; Gemini 3.6 Flash emits 87–95 for comparable work. The
+difference is almost entirely `TEXT_MESSAGE_CONTENT` — Kimi streams per token, Gemini ships
+large chunks. This is what forced the replayer's keyframe caching (see below): a fold-from-zero
+per repaint is fine at 90 events and unusable at 1,300.
+
+Two model-specific quirks needed handling in `llm.py`: Gemini 3.x returns a
+`thoughtSignature` alongside function calls that must be echoed back verbatim in history or
+the next turn 400s, and `kimi-k3` rejects any `temperature` other than 1.
 
 **Why variants are read from tool arguments.** Initially the agent's copy variants were
 parsed out of its prose using a `VARIANT id | channel | copy` convention. That silently
@@ -215,9 +228,10 @@ channel and prose is not.
   "edit" means is a private contract between this backend and this frontend.
 - **Which tools are gated is my policy.** AG-UI supplies the pause mechanism; it has nothing
   to say about which actions deserve one.
-- **Recordings are large.** A token-streaming model emits ~1,700 events for one run,
-  dominated by single-token `TEXT_MESSAGE_CONTENT` frames. The approve recording is ~330 KB
-  of JSON. It compresses well and loads lazily, but per-token events over SSE are not free.
+- **Recordings are large when the model streams per token.** The Kimi runs are 200–320 KB of
+  JSON each, dominated by single-token `TEXT_MESSAGE_CONTENT` frames; the Gemini runs are
+  ~35–75 KB for comparable work. They compress well and load lazily (only the selected
+  scenario is fetched), but per-token events over SSE are not free.
 - **No tests beyond conformance and manual browser verification.** There is a schema
   conformance check in CI and the UI was verified in a real headless Chromium (all three
   scenarios, mobile viewport, both themes), but there is no unit suite.

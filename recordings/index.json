@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T15:11:30Z",
+  "generated_at": "2026-08-01T16:09:04Z",
   "recordings": [
     {
       "scenario": "approve",
@@ -418,6 +418,361 @@
         "TOOL_CALL_START": 7
       },
       "file": "reject.json"
+    },
+    {
+      "scenario": "messy_brief",
+      "label": "Vague brief, agent recovers",
+      "model": "gemini-3.6-flash",
+      "captured_at": "2026-08-01T16:08:17Z",
+      "event_count": 87,
+      "duration_ms": 25014,
+      "wire_meter": {
+        "state_sync_ticks": 11,
+        "agui_delta_bytes_total": 11660,
+        "naive_snapshot_bytes_total": 52397,
+        "bytes_saved": 40737,
+        "reduction_pct": 77.75,
+        "snapshot_to_delta_ratio": 4.49,
+        "per_tick": [
+          {
+            "tick": 1,
+            "label": "seed snapshot",
+            "patch_ops": 0,
+            "delta_bytes": 473,
+            "snapshot_baseline_bytes": 473
+          },
+          {
+            "tick": 2,
+            "label": "brief accepted",
+            "patch_ops": 1,
+            "delta_bytes": 95,
+            "snapshot_baseline_bytes": 476
+          },
+          {
+            "tick": 3,
+            "label": "segments researched",
+            "patch_ops": 6,
+            "delta_bytes": 1164,
+            "snapshot_baseline_bytes": 1298
+          },
+          {
+            "tick": 4,
+            "label": "benchmarks loaded",
+            "patch_ops": 9,
+            "delta_bytes": 2326,
+            "snapshot_baseline_bytes": 3174
+          },
+          {
+            "tick": 5,
+            "label": "budget allocated",
+            "patch_ops": 3,
+            "delta_bytes": 1946,
+            "snapshot_baseline_bytes": 4940
+          },
+          {
+            "tick": 6,
+            "label": "copy variants + compliance",
+            "patch_ops": 6,
+            "delta_bytes": 1759,
+            "snapshot_baseline_bytes": 6387
+          },
+          {
+            "tick": 7,
+            "label": "copy variants + compliance",
+            "patch_ops": 8,
+            "delta_bytes": 766,
+            "snapshot_baseline_bytes": 6310
+          },
+          {
+            "tick": 8,
+            "label": "approval requested",
+            "patch_ops": 5,
+            "delta_bytes": 853,
+            "snapshot_baseline_bytes": 6857
+          },
+          {
+            "tick": 9,
+            "label": "human edited copy",
+            "patch_ops": 2,
+            "delta_bytes": 320,
+            "snapshot_baseline_bytes": 6740
+          },
+          {
+            "tick": 10,
+            "label": "human approved_with_edits",
+            "patch_ops": 6,
+            "delta_bytes": 1217,
+            "snapshot_baseline_bytes": 7591
+          },
+          {
+            "tick": 11,
+            "label": "campaign published",
+            "patch_ops": 3,
+            "delta_bytes": 741,
+            "snapshot_baseline_bytes": 8151
+          }
+        ],
+        "event_counts_by_type": {
+          "CUSTOM": 2,
+          "RUN_FINISHED": 2,
+          "RUN_STARTED": 2,
+          "STATE_DELTA": 10,
+          "STATE_SNAPSHOT": 1,
+          "STEP_FINISHED": 6,
+          "STEP_STARTED": 7,
+          "TEXT_MESSAGE_CONTENT": 30,
+          "TEXT_MESSAGE_END": 1,
+          "TEXT_MESSAGE_START": 1,
+          "TOOL_CALL_ARGS": 6,
+          "TOOL_CALL_END": 6,
+          "TOOL_CALL_RESULT": 6,
+          "TOOL_CALL_START": 6
+        },
+        "total_events": 86
+      },
+      "event_counts_by_type": {
+        "CUSTOM": 2,
+        "RAW": 1,
+        "RUN_FINISHED": 2,
+        "RUN_STARTED": 2,
+        "STATE_DELTA": 10,
+        "STATE_SNAPSHOT": 1,
+        "STEP_FINISHED": 6,
+        "STEP_STARTED": 7,
+        "TEXT_MESSAGE_CONTENT": 30,
+        "TEXT_MESSAGE_END": 1,
+        "TEXT_MESSAGE_START": 1,
+        "TOOL_CALL_ARGS": 6,
+        "TOOL_CALL_END": 6,
+        "TOOL_CALL_RESULT": 6,
+        "TOOL_CALL_START": 6
+      },
+      "file": "messy_brief.json"
+    },
+    {
+      "scenario": "long_run",
+      "label": "Long enterprise run",
+      "model": "gemini-3.6-flash",
+      "captured_at": "2026-08-01T16:08:40Z",
+      "event_count": 95,
+      "duration_ms": 22240,
+      "wire_meter": {
+        "state_sync_ticks": 9,
+        "agui_delta_bytes_total": 9676,
+        "naive_snapshot_bytes_total": 39147,
+        "bytes_saved": 29471,
+        "reduction_pct": 75.28,
+        "snapshot_to_delta_ratio": 4.05,
+        "per_tick": [
+          {
+            "tick": 1,
+            "label": "seed snapshot",
+            "patch_ops": 0,
+            "delta_bytes": 695,
+            "snapshot_baseline_bytes": 695
+          },
+          {
+            "tick": 2,
+            "label": "brief accepted",
+            "patch_ops": 1,
+            "delta_bytes": 95,
+            "snapshot_baseline_bytes": 698
+          },
+          {
+            "tick": 3,
+            "label": "segments researched",
+            "patch_ops": 6,
+            "delta_bytes": 1193,
+            "snapshot_baseline_bytes": 1549
+          },
+          {
+            "tick": 4,
+            "label": "benchmarks loaded",
+            "patch_ops": 9,
+            "delta_bytes": 2336,
+            "snapshot_baseline_bytes": 3435
+          },
+          {
+            "tick": 5,
+            "label": "budget allocated",
+            "patch_ops": 3,
+            "delta_bytes": 1964,
+            "snapshot_baseline_bytes": 5219
+          },
+          {
+            "tick": 6,
+            "label": "copy variants + compliance",
+            "patch_ops": 6,
+            "delta_bytes": 1358,
+            "snapshot_baseline_bytes": 6265
+          },
+          {
+            "tick": 7,
+            "label": "approval requested",
+            "patch_ops": 5,
+            "delta_bytes": 877,
+            "snapshot_baseline_bytes": 6836
+          },
+          {
+            "tick": 8,
+            "label": "human approved",
+            "patch_ops": 5,
+            "delta_bytes": 423,
+            "snapshot_baseline_bytes": 6948
+          },
+          {
+            "tick": 9,
+            "label": "campaign published",
+            "patch_ops": 3,
+            "delta_bytes": 735,
+            "snapshot_baseline_bytes": 7502
+          }
+        ],
+        "event_counts_by_type": {
+          "CUSTOM": 2,
+          "RUN_FINISHED": 2,
+          "RUN_STARTED": 2,
+          "STATE_DELTA": 8,
+          "STATE_SNAPSHOT": 1,
+          "STEP_FINISHED": 5,
+          "STEP_STARTED": 6,
+          "TEXT_MESSAGE_CONTENT": 46,
+          "TEXT_MESSAGE_END": 1,
+          "TEXT_MESSAGE_START": 1,
+          "TOOL_CALL_ARGS": 5,
+          "TOOL_CALL_END": 5,
+          "TOOL_CALL_RESULT": 5,
+          "TOOL_CALL_START": 5
+        },
+        "total_events": 94
+      },
+      "event_counts_by_type": {
+        "CUSTOM": 2,
+        "RAW": 1,
+        "RUN_FINISHED": 2,
+        "RUN_STARTED": 2,
+        "STATE_DELTA": 8,
+        "STATE_SNAPSHOT": 1,
+        "STEP_FINISHED": 5,
+        "STEP_STARTED": 6,
+        "TEXT_MESSAGE_CONTENT": 46,
+        "TEXT_MESSAGE_END": 1,
+        "TEXT_MESSAGE_START": 1,
+        "TOOL_CALL_ARGS": 5,
+        "TOOL_CALL_END": 5,
+        "TOOL_CALL_RESULT": 5,
+        "TOOL_CALL_START": 5
+      },
+      "file": "long_run.json"
+    },
+    {
+      "scenario": "smb_reject",
+      "label": "SMB plan rejected on strategy",
+      "model": "gemini-3.6-flash",
+      "captured_at": "2026-08-01T16:09:04Z",
+      "event_count": 93,
+      "duration_ms": 23471,
+      "wire_meter": {
+        "state_sync_ticks": 8,
+        "agui_delta_bytes_total": 8997,
+        "naive_snapshot_bytes_total": 30277,
+        "bytes_saved": 21280,
+        "reduction_pct": 70.28,
+        "snapshot_to_delta_ratio": 3.37,
+        "per_tick": [
+          {
+            "tick": 1,
+            "label": "seed snapshot",
+            "patch_ops": 0,
+            "delta_bytes": 484,
+            "snapshot_baseline_bytes": 484
+          },
+          {
+            "tick": 2,
+            "label": "brief accepted",
+            "patch_ops": 1,
+            "delta_bytes": 95,
+            "snapshot_baseline_bytes": 487
+          },
+          {
+            "tick": 3,
+            "label": "segments researched",
+            "patch_ops": 6,
+            "delta_bytes": 1182,
+            "snapshot_baseline_bytes": 1327
+          },
+          {
+            "tick": 4,
+            "label": "benchmarks loaded",
+            "patch_ops": 9,
+            "delta_bytes": 2297,
+            "snapshot_baseline_bytes": 3174
+          },
+          {
+            "tick": 5,
+            "label": "budget allocated",
+            "patch_ops": 3,
+            "delta_bytes": 1942,
+            "snapshot_baseline_bytes": 4936
+          },
+          {
+            "tick": 6,
+            "label": "copy variants + compliance",
+            "patch_ops": 6,
+            "delta_bytes": 1528,
+            "snapshot_baseline_bytes": 6152
+          },
+          {
+            "tick": 7,
+            "label": "approval requested",
+            "patch_ops": 5,
+            "delta_bytes": 867,
+            "snapshot_baseline_bytes": 6713
+          },
+          {
+            "tick": 8,
+            "label": "human rejected publish",
+            "patch_ops": 5,
+            "delta_bytes": 602,
+            "snapshot_baseline_bytes": 7004
+          }
+        ],
+        "event_counts_by_type": {
+          "CUSTOM": 2,
+          "RUN_FINISHED": 2,
+          "RUN_STARTED": 2,
+          "STATE_DELTA": 7,
+          "STATE_SNAPSHOT": 1,
+          "STEP_FINISHED": 5,
+          "STEP_STARTED": 6,
+          "TEXT_MESSAGE_CONTENT": 45,
+          "TEXT_MESSAGE_END": 1,
+          "TEXT_MESSAGE_START": 1,
+          "TOOL_CALL_ARGS": 5,
+          "TOOL_CALL_END": 5,
+          "TOOL_CALL_RESULT": 5,
+          "TOOL_CALL_START": 5
+        },
+        "total_events": 92
+      },
+      "event_counts_by_type": {
+        "CUSTOM": 2,
+        "RAW": 1,
+        "RUN_FINISHED": 2,
+        "RUN_STARTED": 2,
+        "STATE_DELTA": 7,
+        "STATE_SNAPSHOT": 1,
+        "STEP_FINISHED": 5,
+        "STEP_STARTED": 6,
+        "TEXT_MESSAGE_CONTENT": 45,
+        "TEXT_MESSAGE_END": 1,
+        "TEXT_MESSAGE_START": 1,
+        "TOOL_CALL_ARGS": 5,
+        "TOOL_CALL_END": 5,
+        "TOOL_CALL_RESULT": 5,
+        "TOOL_CALL_START": 5
+      },
+      "file": "smb_reject.json"
     }
   ]
 }

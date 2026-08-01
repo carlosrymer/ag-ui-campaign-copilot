@@ -40,7 +40,7 @@ Secondarily: engineers evaluating whether AG-UI is worth adopting for their own 
   with every step surfaced to the UI as typed AG-UI events.
 - Make the publish step genuinely un-bypassable without a human decision.
 - Exercise all three human paths — approve, edit, reject — and show the agent handling each
-  correctly.
+  correctly, with more than one example of each and at least one deliberately messy brief.
 - **Measure** the state-sync claim: bytes on the wire for AG-UI's snapshot-plus-patches
   approach versus a naive full-snapshot-per-tick baseline, over the same runs.
 - Report event counts by type, so the shape of a real run is visible rather than asserted.
@@ -79,8 +79,9 @@ events. Two event sources feed that reducer: a live SSE client, and a replayer t
 recorded event streams at captured timing with a scrubber. Panels: streaming transcript,
 live tool-call cards, the approval gate, a shared-state panel, and a wire-byte meter.
 
-**Deliverable** — three real captured runs (one per human decision path) committed as JSON,
-and a static GitHub Pages site that replays them.
+**Deliverable** — six real captured runs committed as JSON (two per human decision path,
+across two model providers, including a deliberately vague brief), and a static GitHub Pages
+site that replays them.
 
 ## User stories
 
@@ -102,11 +103,12 @@ and a static GitHub Pages site that replays them.
 
 Judged strictly on whether AG-UI delivered on the two claims under test.
 
-**Claim 1 — incremental state sync is meaningfully cheaper.** Met. Across three recorded
-runs, state sync cost 3.5–6.2× fewer bytes than re-sending the full state object at the
-same ticks, measured with identical SSE framing and the same JSON encoder. The advantage
-grows as the run proceeds, because the state object grows monotonically while patches stay
-proportional to what changed. See README for the per-run table.
+**Claim 1 — incremental state sync is meaningfully cheaper.** Met. Across six recorded runs
+on two providers, state sync cost 3.37–5.24× fewer bytes (4.43× in aggregate) than
+re-sending the full state object at the same ticks, measured with identical SSE framing and
+the same JSON encoder. The advantage tracks how large the state object is rather than how
+long the run lasts — the weakest ratio is the run with the smallest final state. See README
+for the per-run table.
 
 The caveat that matters: this only wins because the state object is large relative to each
 change. Early in a run, when state is nearly empty, individual patches are *not* cheaper
@@ -124,9 +126,11 @@ Where it fell short is documented honestly in the README and ARCHITECTURE — th
 specifies the pause, but leaves session durability, the semantics of an edit, and gate
 policy entirely to the implementer.
 
-**Build criteria.** All met: three real captured runs committed; every recorded event
-validates against the official `@ag-ui/core` zod schemas; the static site replays real
-recordings through the live app's own components; no fabricated event streams.
+**Build criteria.** All met: six real captured runs committed (two per human decision path,
+across two model providers, including a deliberately vague brief the agent had to recover
+from); all 3,480 recorded events validate against the official `@ag-ui/core` zod schemas;
+the static site replays real recordings through the live app's own components; no fabricated
+event streams anywhere.
 
 ## Risks / open questions
 
@@ -143,8 +147,11 @@ recordings through the live app's own components; no fabricated event streams.
   models occasionally passed a bad filter argument and self-corrected on a retry. The
   recordings show this rather than hiding it.
 - **Provider availability.** The Gemini key ran out of prepayment credits partway through
-  this build, so the committed recordings are from Kimi K3. Both clients are implemented
-  and both were verified working.
+  this build and was later topped up, so the committed recordings are split across Kimi K3
+  and Gemini 3.6 Flash. Both clients are implemented and both were verified working.
+- **Event counts are not comparable across providers.** Kimi K3 emitted ~12× more events
+  than Gemini for the same workload, entirely in text deltas. Any AG-UI client doing
+  per-event work needs to coalesce.
 - **Replay is not proof of liveness.** A recording can go stale against a changed backend.
   The conformance check in CI catches schema drift but not behavioural drift.
 
