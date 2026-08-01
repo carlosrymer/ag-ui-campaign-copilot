@@ -1,0 +1,50 @@
+[
+  {
+    "id": "linkedin_ads",
+    "name": "LinkedIn Ads",
+    "pricing_model": "cpm",
+    "unit_cost_usd": 38.5,
+    "min_viable_spend_usd": 5000,
+    "lead_time_days": 3
+  },
+  {
+    "id": "google_search",
+    "name": "Google Search",
+    "pricing_model": "cpc",
+    "unit_cost_usd": 12.8,
+    "min_viable_spend_usd": 2500,
+    "lead_time_days": 1
+  },
+  {
+    "id": "display_retargeting",
+    "name": "Display Retargeting",
+    "pricing_model": "cpm",
+    "unit_cost_usd": 6.2,
+    "min_viable_spend_usd": 1500,
+    "lead_time_days": 2
+  },
+  {
+    "id": "email_nurture",
+    "name": "Email Nurture",
+    "pricing_model": "cpm",
+    "unit_cost_usd": 1.1,
+    "min_viable_spend_usd": 500,
+    "lead_time_days": 1
+  },
+  {
+    "id": "webinar",
+    "name": "Webinar Program",
+    "pricing_model": "flat",
+    "unit_cost_usd": 14000.0,
+    "min_viable_spend_usd": 14000,
+    "lead_time_days": 21
+  },
+  {
+    "id": "podcast_sponsor",
+    "name": "Podcast Sponsorship",
+    "pricing_model": "cpm",
+    "unit_cost_usd": 25.0,
+    "min_viable_spend_usd": 8000,
+    "lead_time_days": 14
+  }
+]

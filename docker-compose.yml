@@ -1,0 +1,30 @@
+services:
+  agent:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      MOONSHOT_API_KEY: ${MOONSHOT_API_KEY:-}
+      COPILOT_MODEL: ${COPILOT_MODEL:-kimi-k3}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  ui:
+    image: node:22-slim
+    working_dir: /app
+    depends_on:
+      agent:
+        condition: service_healthy
+    environment:
+      # Point the UI at the agent container so the gate is clickable for real.
+      VITE_AGENT_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - ./recordings:/recordings:ro
+    command: sh -c "npm install && npm run sync:recordings && npm run dev -- --host 0.0.0.0"

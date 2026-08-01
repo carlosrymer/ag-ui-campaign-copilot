@@ -1,0 +1,8 @@
+node_modules/
+dist/
+frontend/public/recordings/
+__pycache__/
+*.pyc
+.venv/
+.env
+.DS_Store

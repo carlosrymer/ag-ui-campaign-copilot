@@ -1,0 +1,74 @@
+[
+  {
+    "id": "seg_midmarket_fintech",
+    "name": "Mid-market fintech ops leaders",
+    "industry": "Financial Services",
+    "employee_band": "201-1000",
+    "reachable_accounts": 4820,
+    "avg_acv_usd": 48000,
+    "intent_score": 0.71
+  },
+  {
+    "id": "seg_ent_healthcare_it",
+    "name": "Enterprise healthcare IT buyers",
+    "industry": "Healthcare",
+    "employee_band": "1000+",
+    "reachable_accounts": 1240,
+    "avg_acv_usd": 145000,
+    "intent_score": 0.63
+  },
+  {
+    "id": "seg_smb_ecom_ops",
+    "name": "SMB e-commerce operations managers",
+    "industry": "Retail / E-commerce",
+    "employee_band": "11-200",
+    "reachable_accounts": 18600,
+    "avg_acv_usd": 9800,
+    "intent_score": 0.55
+  },
+  {
+    "id": "seg_ent_manufacturing",
+    "name": "Enterprise manufacturing supply-chain leads",
+    "industry": "Manufacturing",
+    "employee_band": "1000+",
+    "reachable_accounts": 2075,
+    "avg_acv_usd": 118000,
+    "intent_score": 0.48
+  },
+  {
+    "id": "seg_midmarket_devtools",
+    "name": "Mid-market platform engineering leads",
+    "industry": "Software",
+    "employee_band": "201-1000",
+    "reachable_accounts": 6390,
+    "avg_acv_usd": 62000,
+    "intent_score": 0.78
+  },
+  {
+    "id": "seg_smb_prof_services",
+    "name": "SMB professional services owners",
+    "industry": "Professional Services",
+    "employee_band": "11-200",
+    "reachable_accounts": 24100,
+    "avg_acv_usd": 7400,
+    "intent_score": 0.41
+  },
+  {
+    "id": "seg_ent_public_sector",
+    "name": "Public sector procurement directors",
+    "industry": "Government",
+    "employee_band": "1000+",
+    "reachable_accounts": 890,
+    "avg_acv_usd": 210000,
+    "intent_score": 0.35
+  },
+  {
+    "id": "seg_midmarket_logistics",
+    "name": "Mid-market logistics ops directors",
+    "industry": "Transportation",
+    "employee_band": "201-1000",
+    "reachable_accounts": 3310,
+    "avg_acv_usd": 54000,
+    "intent_score": 0.58
+  }
+]

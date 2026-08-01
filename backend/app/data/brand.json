@@ -1,0 +1,27 @@
+{
+  "company": "Northwind Analytics",
+  "product": "Northwind Signal",
+  "one_liner": "Revenue analytics that tells go-to-market teams which accounts to work next.",
+  "tone": [
+    "direct",
+    "specific",
+    "no hype",
+    "numbers over adjectives"
+  ],
+  "banned_phrases": [
+    "revolutionary",
+    "game-changing",
+    "unlock the power",
+    "seamlessly",
+    "cutting-edge"
+  ],
+  "compliance_notes": [
+    "No unqualified ROI claims -- any number must cite a customer or a benchmark.",
+    "Healthcare and public-sector copy must avoid implying HIPAA/FedRAMP certification."
+  ],
+  "proof_points": [
+    "Cut pipeline review prep from 6 hours to 40 minutes at Halden Logistics.",
+    "38% of Northwind customers report a full quarter of forecast accuracy within 90 days.",
+    "Deploys against Salesforce and HubSpot without a data-warehouse project."
+  ]
+}
