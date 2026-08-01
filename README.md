@@ -213,12 +213,18 @@ captures I discarded and re-recorded after finding a model-labelling bug:
 
 | Provider | Spend | What it bought |
 |---|---|---|
-| Moonshot (Kimi K3) | **$1.93** | ~7 full capture runs; 3 kept. K3's reasoning bursts are expensive — it was roughly 20× the cost per run of Gemini Flash. |
-| Google (Gemini 3.6 Flash) | **< $0.10** | 3 kept capture runs plus debugging. Ran out of prepayment credits mid-build for unrelated reasons and was topped up. |
+| Moonshot (Kimi K3) | **~$1.90** | About seven full capture runs, three of which are committed. |
+| Google (Gemini 3.6 Flash) | **under $0.10** | Three committed capture runs plus debugging. |
 
-Total under **$2.10** for the whole project. Worth stating plainly because the expensive
-part was not the build — it was re-recording, which is exactly what committed run artifacts
-are supposed to make unnecessary next time.
+Roughly **$2** end to end. Two caveats on that number: it is measured as a balance delta on
+an account shared with other work, so treat it as an upper bound rather than an exact
+attribution, and Gemini's is a rough figure rather than a metered one.
+
+The distribution is the interesting part. Kimi K3 cost on the order of **20× more per run**
+than Gemini 3.6 Flash for the same workload, because K3 does long internal reasoning bursts
+before it answers. And most of the spend was not building the thing — it was **re-recording**
+after I found bugs (a model-labelling bug, then an empty-variants bug at the approval gate).
+Committed run artifacts exist precisely so that nobody has to pay that cost twice.
 
 ## Docs
 
